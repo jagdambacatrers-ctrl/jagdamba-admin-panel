@@ -2,95 +2,68 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Jagdamba Caterers Admin Dashboard Design System */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Jagdamba Admin Color Palette */
+    --admin-primary: 43 85% 62%;        /* #F3C449 - Warm Gold */
+    --admin-primary-foreground: 0 0% 5%; /* Dark text on gold */
+    
+    --admin-accent: 0 55% 25%;          /* #6B1F1F - Deep Maroon */
+    --admin-accent-foreground: 36 100% 95%; /* #FFF9F2 */
+    
+    --admin-background: 0 0% 6%;        /* #0F0E0E - Near Black */
+    --admin-foreground: 36 100% 95%;    /* #FFF9F2 - Primary Light Text */
+    
+    --admin-panel: 0 6% 11%;            /* #1E1A1A - Panel Background */
+    --admin-panel-foreground: 36 100% 95%;
+    
+    --admin-muted: 33 20% 70%;          /* #BDB3A3 - Muted Text */
+    --admin-muted-foreground: 0 0% 6%;
+    
+    --admin-success: 145 63% 49%;       /* #2ECC71 */
+    --admin-success-foreground: 0 0% 100%;
+    
+    --admin-danger: 4 90% 58%;          /* #E74C3C */
+    --admin-danger-foreground: 0 0% 100%;
+    
+    --admin-border: 0 100% 100% / 0.03; /* Subtle white border */
+    --admin-input: 0 6% 15%;            /* Darker input background */
+    --admin-ring: 43 85% 62%;           /* Gold focus ring */
+    
+    /* Semantic mappings for consistency */
+    --background: var(--admin-background);
+    --foreground: var(--admin-foreground);
+    --primary: var(--admin-primary);
+    --primary-foreground: var(--admin-primary-foreground);
+    --secondary: var(--admin-panel);
+    --secondary-foreground: var(--admin-panel-foreground);
+    --muted: var(--admin-panel);
+    --muted-foreground: var(--admin-muted);
+    --accent: var(--admin-accent);
+    --accent-foreground: var(--admin-accent-foreground);
+    --destructive: var(--admin-danger);
+    --destructive-foreground: var(--admin-danger-foreground);
+    --border: var(--admin-border);
+    --input: var(--admin-input);
+    --ring: var(--admin-ring);
+    --card: var(--admin-panel);
+    --card-foreground: var(--admin-panel-foreground);
+    --popover: var(--admin-panel);
+    --popover-foreground: var(--admin-panel-foreground);
+    
+    --radius: 0.75rem;
+    
+    /* Sidebar specific */
+    --sidebar-background: var(--admin-background);
+    --sidebar-foreground: var(--admin-foreground);
+    --sidebar-primary: var(--admin-primary);
+    --sidebar-primary-foreground: var(--admin-primary-foreground);
+    --sidebar-accent: var(--admin-panel);
+    --sidebar-accent-foreground: var(--admin-foreground);
+    --sidebar-border: var(--admin-border);
+    --sidebar-ring: var(--admin-ring);
   }
 }
 
@@ -100,6 +73,89 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  
+  /* Custom scrollbar for dark theme */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--admin-background));
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--admin-muted));
+    border-radius: 3px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--admin-primary));
+  }
+}
+
+@layer components {
+  /* Admin Panel Specific Components */
+  .admin-card {
+    @apply bg-card border border-white/[0.03] rounded-xl shadow-lg backdrop-blur-sm;
+    box-shadow: 0 6px 18px rgba(243, 196, 73, 0.04);
+  }
+  
+  .admin-button-primary {
+    @apply bg-primary text-primary-foreground rounded-xl px-6 py-3 font-medium transition-all duration-300;
+    box-shadow: 0 4px 14px rgba(243, 196, 73, 0.2);
+  }
+  
+  .admin-button-primary:hover {
+    @apply scale-105;
+    box-shadow: 0 6px 20px rgba(243, 196, 73, 0.3);
+  }
+  
+  .admin-input {
+    @apply bg-input border border-white/[0.05] rounded-lg px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary transition-colors;
+  }
+  
+  .glass-effect {
+    @apply backdrop-blur-md bg-white/[0.02] border border-white/[0.05];
+  }
+  
+  /* Animation utilities */
+  .animate-slide-up {
+    animation: slideUp 0.4s ease-out;
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-gold {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(243, 196, 73, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(243, 196, 73, 0);
   }
 }
