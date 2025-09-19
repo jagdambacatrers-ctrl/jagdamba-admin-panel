@@ -87,6 +87,29 @@ const Login = () => {
         </CardHeader>
 
         <CardContent>
+          {/* Default Credentials */}
+          <div className="mb-6 p-4 rounded-lg bg-primary/10 border border-primary/20">
+            <h3 className="font-semibold mb-2 text-primary">Demo Credentials</h3>
+            <div className="space-y-1 text-sm">
+              <p><span className="font-medium">Email:</span> mahendra2731@gmail.com</p>
+              <p><span className="font-medium">Password:</span> Mahi@12345</p>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="mt-3 w-full"
+              onClick={() => {
+                setFormData({
+                  email: 'mahendra2731@gmail.com',
+                  password: 'Mahi@12345'
+                });
+              }}
+            >
+              Use Demo Credentials
+            </Button>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
               <Alert variant="destructive">
