@@ -68,38 +68,43 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden -z-10">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-accent/5 rounded-full blur-3xl" />
       </div>
 
-      <Card className="w-full max-w-sm sm:max-w-md mx-auto">
-        <CardHeader>
+      <Card className="w-full max-w-sm sm:max-w-md mx-auto relative">
+        <CardHeader className="space-y-3">
+          <div className="flex justify-center mb-4">
+            <img src="/full_logo.png" alt="Jagdamba Logo" className="h-20 w-auto" />
+          </div>
           <CardTitle className="text-center text-2xl sm:text-3xl font-bold">Admin Login</CardTitle>
           <CardDescription className="text-center text-muted-foreground">Sign in to your admin account</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
+            <div className="relative z-10">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className="w-full"
+                className="w-full bg-background"
                 required
                 placeholder="Enter your email"
               />
             </div>
-            <div>
+            <div className="relative z-10">
               <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
+                name="password"
                 type="password"
                 value={formData.password}
                 onChange={handleInputChange}
-                className="w-full"
+                className="w-full bg-background"
                 required
                 placeholder="Enter your password"
               />
@@ -109,7 +114,11 @@ const Login = () => {
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button 
+              type="submit" 
+              className="w-full relative z-10 bg-primary hover:bg-primary/90" 
+              disabled={loading}
+            >
               {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
               Sign In
             </Button>
