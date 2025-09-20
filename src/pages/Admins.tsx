@@ -234,104 +234,108 @@ const Admins = () => {
                 <p className="text-sm text-muted-foreground">Total Admins</p>
                 <p className="text-2xl font-bold text-primary">{admins.length}</p>
               </div>
-              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button onClick={openCreateDialog} className="admin-button-primary">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add Admin
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-md">
-                  <DialogHeader>
-                    <DialogTitle>
-                      {editingAdmin ? 'Edit Admin' : 'Add New Admin'}
-                    </DialogTitle>
-                  </DialogHeader>
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                      <Label htmlFor="username">Username *</Label>
-                      <Input
-                        id="username"
-                        value={formData.username}
-                        onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                        className="admin-input"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="email">Email *</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="admin-input"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="password">
-                        Password {editingAdmin ? '(leave blank to keep current)' : '*'}
-                      </Label>
-                      <Input
-                        id="password"
-                        type="password"
-                        value={formData.password}
-                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                        className="admin-input"
-                        required={!editingAdmin}
-                        placeholder={editingAdmin ? "Enter new password" : "Enter password"}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="profile_picture">Profile Picture</Label>
-                      <Input
-                        id="profile_picture"
-                        type="file"
-                        accept="image/*"
-                        onChange={e => {
-                          if (e.target.files && e.target.files[0]) {
-                            setImageFile(e.target.files[0]);
-                            const reader = new FileReader();
-                            reader.onloadend = () => setImagePreview(reader.result as string);
-                            reader.readAsDataURL(e.target.files[0]);
-                          }
-                        }}
-                        className="admin-input"
-                      />
-                      {imagePreview && (
-                        <img src={imagePreview} alt="Preview" className="mt-2 w-20 h-20 object-cover rounded" />
-                      )}
-                    </div>
-                    <div>
-                      <Label htmlFor="confirmPassword">Confirm Password *</Label>
-                      <Input
-                        id="confirmPassword"
-                        type="password"
-                        value={formData.confirmPassword}
-                        onChange={e => setFormData({ ...formData, confirmPassword: e.target.value })}
-                        className="admin-input"
-                        required={!editingAdmin}
-                        placeholder="Confirm password"
-                      />
-                    </div>
-                    <div className="flex space-x-2 pt-4">
-                      <Button type="submit" disabled={saving} className="flex-1">
-                        {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                        {editingAdmin ? 'Update' : 'Create'}
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => setDialogOpen(false)}
-                        className="flex-1"
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  </form>
-                </DialogContent>
-              </Dialog>
+              {currentAdmin?.email === 'mahendra2731@gmail.com' && (
+                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button onClick={openCreateDialog} className="admin-button-primary">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Admin
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>
+                        {editingAdmin ? 'Edit Admin' : 'Add New Admin'}
+                      </DialogTitle>
+                    </DialogHeader>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                      <div>
+                        <Label htmlFor="username">Username *</Label>
+                        <Input
+                          id="username"
+                          value={formData.username}
+                          onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                          className="admin-input"
+                          required
+                          placeholder="Enter username"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="email">Email *</Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          value={formData.email}
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                          className="admin-input"
+                          required
+                          placeholder="Enter email"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="password">
+                          Password {editingAdmin ? '(leave blank to keep current)' : '*'}
+                        </Label>
+                        <Input
+                          id="password"
+                          type="password"
+                          value={formData.password}
+                          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                          className="admin-input"
+                          required={!editingAdmin}
+                          placeholder={editingAdmin ? "Enter new password" : "Enter password"}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="profile_picture">Profile Picture</Label>
+                        <Input
+                          id="profile_picture"
+                          type="file"
+                          accept="image/*"
+                          onChange={e => {
+                            if (e.target.files && e.target.files[0]) {
+                              setImageFile(e.target.files[0]);
+                              const reader = new FileReader();
+                              reader.onloadend = () => setImagePreview(reader.result as string);
+                              reader.readAsDataURL(e.target.files[0]);
+                            }
+                          }}
+                          className="admin-input"
+                        />
+                        {imagePreview && (
+                          <img src={imagePreview} alt="Preview" className="mt-2 w-20 h-20 object-cover rounded" />
+                        )}
+                      </div>
+                      <div>
+                        <Label htmlFor="confirmPassword">Confirm Password *</Label>
+                        <Input
+                          id="confirmPassword"
+                          type="password"
+                          value={formData.confirmPassword}
+                          onChange={e => setFormData({ ...formData, confirmPassword: e.target.value })}
+                          className="admin-input"
+                          required={!editingAdmin}
+                          placeholder="Confirm password"
+                        />
+                      </div>
+                      <div className="flex space-x-2 pt-4">
+                        <Button type="submit" disabled={saving} className="flex-1">
+                          {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                          {editingAdmin ? 'Update' : 'Create'}
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => setDialogOpen(false)}
+                          className="flex-1"
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+              )}
             </div>
           </div>
 
@@ -422,14 +426,7 @@ const Admins = () => {
                           </TableCell>
                           <TableCell className="text-right">
                             <div className="flex space-x-2 justify-end">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => openEditDialog(admin)}
-                              >
-                                <Edit className="w-4 h-4" />
-                              </Button>
-                              {admin.id !== currentAdmin?.id && (
+                              {currentAdmin?.email === 'mahendra2731@gmail.com' && admin.id !== currentAdmin?.id && (
                                 <AlertDialog>
                                   <AlertDialogTrigger asChild>
                                     <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
