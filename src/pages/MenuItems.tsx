@@ -296,34 +296,40 @@ const MenuItems = () => {
   return (
     <div className="min-h-screen bg-background">
       <TopNavbar />
-      
       <main className="flex-1">
-        <div className="p-4 space-y-6">
-          {/* Header */}
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold">Menu Items Management</h1>
-              <p className="text-muted-foreground">Manage your restaurant menu and pricing</p>
+        <div className="p-4 space-y-6 max-w-4xl mx-auto w-full">
+          {/* Header and Actions */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="w-full">
+              <h1 className="text-2xl sm:text-3xl font-bold">Menu Items</h1>
+              <p className="text-muted-foreground text-sm">Manage and update your menu items</p>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="text-right">
-                <p className="text-sm text-muted-foreground">Total Items</p>
-                <p className="text-2xl font-bold text-primary">{totalItems}</p>
-              </div>
-              <Dialog 
-                open={dialogOpen} 
-                onOpenChange={(open) => {
-                  setDialogOpen(open);
-                  if (!open) resetForm();
-                }}
-              >
+            <div className="flex flex-col sm:flex-row items-end sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
+              <Input
+                className="w-full sm:w-64"
+                placeholder="Search menu items..."
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+              />
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="w-full sm:w-48">
+                  <SelectValue placeholder="Filter by category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  {categories.map(cat => (
+                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button onClick={openCreateDialog} className="admin-button-primary">
+                  <Button onClick={openCreateDialog} className="w-full sm:w-auto">
                     <Plus className="w-4 h-4 mr-2" />
-                    Add Menu Item
+                    Add Item
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto p-4">
+                <DialogContent className="sm:max-w-lg w-full">
                   <DialogHeader className="pb-2">
                     <DialogTitle>
                       {editingItem ? 'Edit Menu Item' : 'Add New Menu Item'}
@@ -490,42 +496,8 @@ const MenuItems = () => {
             </div>
           </div>
 
-          {/* Search and Filter Section */}
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-4">
-            <div className="flex flex-col md:flex-row gap-2 md:items-end">
-              <div>
-                <Label htmlFor="search" className="text-sm">Search</Label>
-                <Input
-                  id="search"
-                  type="text"
-                  placeholder="Search by name..."
-                  value={searchTerm}
-                  onChange={e => setSearchTerm(e.target.value)}
-                  className="admin-input w-48"
-                />
-              </div>
-              <div>
-                <Label htmlFor="category-filter" className="text-sm">Category</Label>
-                <Select
-                  value={selectedCategory}
-                  onValueChange={setSelectedCategory}
-                >
-                  <SelectTrigger className="admin-input w-48">
-                    <SelectValue placeholder="All Categories" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Categories</SelectItem>
-                    {categories.map(category => (
-                      <SelectItem key={category} value={category}>{category}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </div>
-
-          {/* Menu Items Table */}
-          <Card className="admin-card">
+          {/* Menu Items Table/Card List */}
+          <Card className="w-full">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <ChefHat className="w-5 h-5" />
@@ -544,8 +516,8 @@ const MenuItems = () => {
                   <p className="text-muted-foreground">No menu items found</p>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <Table>
+                <div className="overflow-x-auto w-full">
+                  <Table className="min-w-[700px] w-full">
                     <TableHeader>
                       <TableRow>
                         <TableHead>Image</TableHead>

@@ -73,80 +73,47 @@ const Login = () => {
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-accent/5 rounded-full blur-3xl" />
       </div>
 
-      <Card className="w-full max-w-md admin-card animate-slide-up">
-        <CardHeader className="text-center space-y-4">
-          <div className="mx-auto w-24 h-24 flex items-center justify-center">
-            <img src="/full_logo.png" alt="Jagdamba Caterers" className="w-full h-full object-contain" />
-          </div>
-          <div>
-            <CardTitle className="text-2xl font-bold brand-text">Admin Login</CardTitle>
-            <CardDescription className="text-muted-foreground">
-              Access <span className="brand-text text-primary">Jagdamba Caterers</span> Admin Panel
-            </CardDescription>
-          </div>
+      <Card className="w-full max-w-sm sm:max-w-md mx-auto">
+        <CardHeader>
+          <CardTitle className="text-center text-2xl sm:text-3xl font-bold">Admin Login</CardTitle>
+          <CardDescription className="text-center text-muted-foreground">Sign in to your admin account</CardDescription>
         </CardHeader>
-
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                className="w-full"
+                required
+                placeholder="Enter your email"
+              />
+            </div>
+            <div>
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                className="w-full"
+                required
+                placeholder="Enter your password"
+              />
+            </div>
             {error && (
               <Alert variant="destructive">
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
-
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium">
-                Email Address
-              </Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                required
-                value={formData.email}
-                onChange={handleInputChange}
-                className="admin-input"
-                placeholder="Enter your email"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium">
-                Password
-              </Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                required
-                value={formData.password}
-                onChange={handleInputChange}
-                className="admin-input"
-                placeholder="Enter your password"
-              />
-            </div>
-
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full admin-button-primary h-12"
-            >
-              {loading ? (
-                <div className="flex items-center space-x-2">
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Signing in...</span>
-                </div>
-              ) : (
-                'Sign In'
-              )}
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+              Sign In
             </Button>
           </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-xs text-muted-foreground">
-              Secure admin access only
-            </p>
-          </div>
         </CardContent>
       </Card>
     </div>

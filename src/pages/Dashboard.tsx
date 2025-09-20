@@ -291,26 +291,18 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       <TopNavbar />
-      
       <main className="flex-1">
-        <div className="p-4 space-y-6">
-          {/* Header */}
-          <div className="flex items-center justify-between">
+        <div className="p-4 space-y-6 max-w-5xl mx-auto w-full">
+          {/* Dashboard Header */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold">Dashboard</h1>
-              <p className="text-muted-foreground">
-                Welcome to <span className="brand-text text-primary">Jagdamba Caterers</span> Admin Panel
-                {admin && <span>, <span className="font-semibold">{admin.username}</span></span>}
-              </p>
+              <h1 className="text-2xl sm:text-3xl font-bold">Dashboard</h1>
+              <p className="text-muted-foreground text-sm">Overview and analytics</p>
             </div>
-            <Badge variant="secondary" className="bg-primary/10 text-primary">
-              <Calendar className="w-4 h-4 mr-2" />
-              {new Date().toLocaleDateString()}
-            </Badge>
           </div>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {statCards.map((stat, index) => (
               <Card 
                 key={stat.title} 
@@ -329,43 +321,27 @@ const Dashboard = () => {
           </div>
 
           {/* Charts Section */}
-          <div className="space-y-6">
-            <h2 className="text-xl font-semibold flex items-center">
-              <BarChart4 className="mr-2 h-5 w-5 text-primary" />
-              Analytics Reports
-            </h2>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Menu Items by Category Chart */}
-              <Card className="admin-card animate-fade-in">
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <ChefHat className="mr-2 h-5 w-5 text-green-500" />
-                    Menu Items by Category
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-80">
-                    <Bar data={categoryDistributionConfig.data} options={categoryDistributionConfig.options} />
-                  </div>
-                </CardContent>
-              </Card>
-              
-              {/* Rating Distribution Chart */}
-              <Card className="admin-card animate-fade-in">
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Star className="mr-2 h-5 w-5 text-yellow-500" />
-                    Rating Distribution
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="flex justify-center">
-                  <div className="h-80 w-full">
-                    <Doughnut data={ratingDistributionConfig.data} options={ratingDistributionConfig.options} />
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card className="w-full">
+              <CardHeader>
+                <CardTitle>Rating Distribution</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="w-full overflow-x-auto">
+                  <Bar data={categoryDistributionConfig.data} options={categoryDistributionConfig.options} />
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="w-full">
+              <CardHeader>
+                <CardTitle>Category Distribution</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="w-full overflow-x-auto">
+                  <Doughnut data={ratingDistributionConfig.data} options={ratingDistributionConfig.options} />
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </main>

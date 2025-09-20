@@ -220,29 +220,28 @@ const Admins = () => {
   return (
     <div className="min-h-screen bg-background">
       <TopNavbar />
-      
       <main className="flex-1">
-        <div className="p-4 space-y-6">
+        <div className="p-4 space-y-6 max-w-3xl mx-auto w-full">
           {/* Header */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold">Admin Management</h1>
-              <p className="text-muted-foreground">Manage admin accounts and permissions</p>
+              <h1 className="text-2xl sm:text-3xl font-bold">Admin Management</h1>
+              <p className="text-muted-foreground text-sm">Manage admin accounts and permissions</p>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="text-right">
+            <div className="flex flex-col sm:flex-row items-end sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
+              <div className="text-right w-full sm:w-auto">
                 <p className="text-sm text-muted-foreground">Total Admins</p>
                 <p className="text-2xl font-bold text-primary">{admins.length}</p>
               </div>
               {currentAdmin?.email === 'mahendra2731@gmail.com' && (
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button onClick={openCreateDialog} className="admin-button-primary">
+                    <Button onClick={openCreateDialog} className="admin-button-primary w-full sm:w-auto">
                       <Plus className="w-4 h-4 mr-2" />
                       Add Admin
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-md">
+                  <DialogContent className="sm:max-w-md w-full">
                     <DialogHeader>
                       <DialogTitle>
                         {editingAdmin ? 'Edit Admin' : 'Add New Admin'}
@@ -340,7 +339,7 @@ const Admins = () => {
           </div>
 
           {/* Current Admin Profile */}
-          <Card className="admin-card border-primary/20">
+          <Card className="admin-card border-primary/20 w-full">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Shield className="w-5 h-5 text-primary" />
@@ -348,16 +347,16 @@ const Admins = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center space-x-4">
+              <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
                 <Avatar className="h-16 w-16">
                   <AvatarImage src={currentAdmin?.profile_picture} />
                   <AvatarFallback className="bg-primary text-primary-foreground text-lg">
                     {currentAdmin?.username?.[0]?.toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <div>
+                <div className="text-center sm:text-left">
                   <h3 className="text-xl font-semibold">{currentAdmin?.username}</h3>
-                  <p className="text-muted-foreground">{currentAdmin?.email}</p>
+                  <p className="text-muted-foreground break-all">{currentAdmin?.email}</p>
                   <p className="text-sm text-primary font-medium">Current Admin</p>
                 </div>
               </div>
@@ -365,7 +364,7 @@ const Admins = () => {
           </Card>
 
           {/* Admins Table */}
-          <Card className="admin-card">
+          <Card className="admin-card w-full">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Users className="w-5 h-5" />
@@ -384,8 +383,8 @@ const Admins = () => {
                   <p className="text-muted-foreground">No admins found</p>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <Table>
+                <div className="overflow-x-auto w-full">
+                  <Table className="min-w-[600px] w-full">
                     <TableHeader>
                       <TableRow>
                         <TableHead>Admin</TableHead>
@@ -465,7 +464,7 @@ const Admins = () => {
           </Card>
 
           {/* Security Notice */}
-          <Card className="admin-card border-amber-500/20 bg-amber-500/5">
+          <Card className="admin-card border-amber-500/20 bg-amber-500/5 w-full">
             <CardContent className="pt-6">
               <div className="flex items-start space-x-3">
                 <Shield className="w-5 h-5 text-amber-500 mt-0.5" />
