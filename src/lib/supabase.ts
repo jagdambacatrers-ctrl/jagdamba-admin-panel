@@ -33,8 +33,12 @@ export interface Contact {
   id: string;
   name: string;
   email: string;
-  phone?: string;
+  phone: string;
+  event_type: string;
+  event_date?: string;
+  guest_count?: string;
   message?: string;
+  submitted_at: string;
   created_at: string;
 }
 

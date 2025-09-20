@@ -21,9 +21,9 @@ const Contacts = () => {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('contacts')
+        .from('contact_form')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('submitted_at', { ascending: false });
 
       if (error) throw error;
       setContacts(data || []);
@@ -41,7 +41,7 @@ const Contacts = () => {
   const handleDelete = async (id: string) => {
     try {
       const { error } = await supabase
-        .from('contacts')
+        .from('contact_form')
         .delete()
         .eq('id', id);
 
@@ -57,8 +57,8 @@ const Contacts = () => {
     }
   };
 
-  const openWhatsApp = (phone: string, name: string) => {
-    const message = encodeURIComponent(`Hello ${name}, thank you for contacting Jagdamba Caterers! How can we assist you today?`);
+  const openWhatsApp = (phone: string, name: string, eventType: string) => {
+    const message = encodeURIComponent(`Hello ${name}, thank you for your ${eventType} inquiry with Jagdamba Caterers! How can we assist you today?`);
     window.open(`https://wa.me/${phone.replace(/\D/g, '')}?text=${message}`, '_blank');
   };
 
@@ -66,9 +66,10 @@ const Contacts = () => {
     window.open(`tel:${phone}`, '_self');
   };
 
-  const openEmail = (email: string, name: string) => {
-    const subject = encodeURIComponent('Re: Your inquiry - Jagdamba Caterers');
-    const body = encodeURIComponent(`Dear ${name},\n\nThank you for contacting Jagdamba Caterers. We have received your message and will get back to you soon.\n\nBest regards,\nJagdamba Caterers Team`);
+  const openEmail = (email: string, name: string, eventType: string, eventDate?: string) => {
+    const subject = encodeURIComponent(`Re: Your ${eventType} inquiry - Jagdamba Caterers`);
+    const dateInfo = eventDate ? `\n\nEvent Date: ${eventDate}` : '';
+    const body = encodeURIComponent(`Dear ${name},\n\nThank you for your ${eventType} inquiry with Jagdamba Caterers. We have received your request and will get back to you soon.${dateInfo}\n\nBest regards,\nJagdamba Caterers Team`);
     window.open(`mailto:${email}?subject=${subject}&body=${body}`, '_self');
   };
 
@@ -116,20 +117,41 @@ const Contacts = () => {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Phone</TableHead>
+                        <TableHead>Client Info</TableHead>
+                        <TableHead>Event Details</TableHead>
+                        <TableHead>Contact Info</TableHead>
                         <TableHead>Message</TableHead>
-                        <TableHead>Date</TableHead>
+                        <TableHead>Date Submitted</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {contacts.map((contact) => (
                         <TableRow key={contact.id}>
-                          <TableCell className="font-medium">{contact.name}</TableCell>
-                          <TableCell>{contact.email}</TableCell>
-                          <TableCell>{contact.phone || 'N/A'}</TableCell>
+                          <TableCell>
+                            <div>
+                              <p className="font-medium">{contact.name}</p>
+                              <p className="text-sm text-muted-foreground">{contact.email}</p>
+                              <p className="text-sm text-muted-foreground">{contact.phone}</p>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div>
+                              <p className="font-medium capitalize">{contact.event_type}</p>
+                              {contact.event_date && (
+                                <p className="text-sm text-muted-foreground">📅 {contact.event_date}</p>
+                              )}
+                              {contact.guest_count && (
+                                <p className="text-sm text-muted-foreground">👥 {contact.guest_count} guests</p>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <p className="text-sm">{contact.email}</p>
+                              <p className="text-sm">{contact.phone}</p>
+                            </div>
+                          </TableCell>
                           <TableCell className="max-w-xs">
                             {contact.message ? (
                               <p className="line-clamp-2">{contact.message}</p>
@@ -138,41 +160,37 @@ const Contacts = () => {
                             )}
                           </TableCell>
                           <TableCell>
-                            {new Date(contact.created_at).toLocaleDateString()}
+                            {new Date(contact.submitted_at).toLocaleDateString()}
                           </TableCell>
                           <TableCell className="text-right">
                             <div className="flex space-x-2 justify-end">
                               {/* WhatsApp Button */}
-                              {contact.phone && (
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => openWhatsApp(contact.phone!, contact.name)}
-                                  className="text-green-600 hover:text-green-700 hover:bg-green-50"
-                                  title="Open WhatsApp"
-                                >
-                                  <MessageSquare className="w-4 h-4" />
-                                </Button>
-                              )}
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => openWhatsApp(contact.phone, contact.name, contact.event_type)}
+                                className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                                title="Open WhatsApp"
+                              >
+                                <MessageSquare className="w-4 h-4" />
+                              </Button>
                               
                               {/* Phone Button */}
-                              {contact.phone && (
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => openPhone(contact.phone!)}
-                                  className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                                  title="Call"
-                                >
-                                  <Phone className="w-4 h-4" />
-                                </Button>
-                              )}
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => openPhone(contact.phone)}
+                                className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                title="Call"
+                              >
+                                <Phone className="w-4 h-4" />
+                              </Button>
                               
                               {/* Email Button */}
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => openEmail(contact.email, contact.name)}
+                                onClick={() => openEmail(contact.email, contact.name, contact.event_type, contact.event_date)}
                                 className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
                                 title="Send Email"
                               >
