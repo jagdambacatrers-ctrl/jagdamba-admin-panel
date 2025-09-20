@@ -18,7 +18,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Reviews", href: "/reviews", icon: Star },
-  { name: "Contacts", href: "/contacts", icon: MessageSquare },
+  { name: "Potential Clients", href: "/contacts", icon: MessageSquare },
   { name: "Menu Items", href: "/menu", icon: ChefHat },
   { name: "Admins", href: "/admins", icon: Users },
 ];
@@ -35,10 +35,10 @@ export const TopNavbar = () => {
         <div className="flex h-full items-center justify-between px-4">
           {/* Logo */}
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">JC</span>
+            <div className="w-8 h-8 flex items-center justify-center">
+              <img src="/logo.png" alt="Jagdamba Caterers" className="w-full h-full object-contain" />
             </div>
-            <span className="text-lg font-semibold">Jagdamba Admin</span>
+            <span className="text-lg font-semibold brand-text">Jagdamba Admin</span>
           </div>
 
           {/* Desktop Navigation */}

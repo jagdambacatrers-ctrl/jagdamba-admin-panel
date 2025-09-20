@@ -4,10 +4,11 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Reviews from "./pages/Reviews";
-import Contacts from "./pages/Contacts";
+import PotentialClients from "./pages/PotentialClients";
 import MenuItems from "./pages/MenuItems";
 import Admins from "./pages/Admins";
 import NotFound from "./pages/NotFound";
@@ -35,6 +36,9 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 const AppRoutes = () => {
   const { admin } = useAuth();
   
+  // Use the document title hook
+  useDocumentTitle();
+  
   return (
     <Routes>
       <Route path="/login" element={admin ? <Navigate to="/dashboard" replace /> : <Login />} />
@@ -58,7 +62,7 @@ const AppRoutes = () => {
         path="/contacts" 
         element={
           <ProtectedRoute>
-            <Contacts />
+            <PotentialClients />
           </ProtectedRoute>
         } 
       />

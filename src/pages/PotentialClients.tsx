@@ -3,12 +3,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { MessageSquare, Phone, Mail, Trash2, Loader2, ExternalLink } from 'lucide-react';
+import { MessageSquare, Phone, Mail, Trash2, Loader2 } from 'lucide-react';
+import WhatsAppIcon from '@/components/icons/WhatsAppIcon';
 import { TopNavbar } from '@/components/layout/TopNavbar';
 import { supabase, Contact } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
 
-const Contacts = () => {
+const PotentialClients = () => {
   const { toast } = useToast();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,7 +32,7 @@ const Contacts = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to fetch contacts",
+        description: "Failed to fetch potential client data",
       });
     } finally {
       setLoading(false);
@@ -46,13 +47,13 @@ const Contacts = () => {
         .eq('id', id);
 
       if (error) throw error;
-      toast({ title: "Customer inquiry deleted successfully" });
+      toast({ title: "Potential client deleted successfully" });
       fetchContacts();
     } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to delete contact",
+        description: "Failed to delete potential client",
       });
     }
   };
@@ -87,30 +88,30 @@ const Contacts = () => {
             </div>
             <div className="flex items-center space-x-4">
               <div className="text-right">
-                <p className="text-sm text-muted-foreground">Website Inquiries</p>
+                <p className="text-sm text-muted-foreground">Potential Clients</p>
                 <p className="text-2xl font-bold text-primary">{contacts.length}</p>
               </div>
             </div>
           </div>
 
-          {/* Contacts Table */}
+          {/* Potential Clients Table */}
           <Card className="admin-card">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <MessageSquare className="w-5 h-5" />
-                <span>Customer Inquiries from Website</span>
+                <span>Potential Client Inquiries</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
               {loading ? (
                 <div className="text-center py-8">
                   <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
-                  <p className="text-muted-foreground">Loading customer inquiries...</p>
+                  <p className="text-muted-foreground">Loading potential client inquiries...</p>
                 </div>
               ) : contacts.length === 0 ? (
                 <div className="text-center py-8">
                   <MessageSquare className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-muted-foreground">No customer inquiries yet</p>
+                  <p className="text-muted-foreground">No potential client inquiries yet</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
@@ -172,7 +173,7 @@ const Contacts = () => {
                                 className="text-green-600 hover:text-green-700 hover:bg-green-50"
                                 title="Open WhatsApp"
                               >
-                                <MessageSquare className="w-4 h-4" />
+                                <WhatsAppIcon className="w-4 h-4" />
                               </Button>
                               
                               {/* Phone Button */}
@@ -204,17 +205,17 @@ const Contacts = () => {
                                     variant="ghost" 
                                     size="sm" 
                                     className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                                    title="Delete Contact"
+                                    title="Delete Potential Client"
                                   >
                                     <Trash2 className="w-4 h-4" />
                                   </Button>
                                 </AlertDialogTrigger>
                                 <AlertDialogContent>
                                   <AlertDialogHeader>
-                                    <AlertDialogTitle>Delete Customer Inquiry</AlertDialogTitle>
+                                    <AlertDialogTitle>Delete Potential Client</AlertDialogTitle>
                                     <AlertDialogDescription>
-                                      Are you sure you want to delete the inquiry from {contact.name}? 
-                                      This action cannot be undone and you will lose this potential client information.
+                                      Are you sure you want to delete the potential client inquiry from {contact.name}? 
+                                      This action cannot be undone and you will lose this client information.
                                     </AlertDialogDescription>
                                   </AlertDialogHeader>
                                   <AlertDialogFooter>
@@ -246,4 +247,4 @@ const Contacts = () => {
   );
 };
 
-export default Contacts;
+export default PotentialClients;

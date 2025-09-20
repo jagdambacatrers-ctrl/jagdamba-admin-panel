@@ -77,6 +77,11 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
   
+  /* Brand font styling */
+  .brand-text {
+    font-family: 'Caveat', cursive;
+  }
+  
   /* Custom scrollbar for dark theme */
   ::-webkit-scrollbar {
     width: 6px;

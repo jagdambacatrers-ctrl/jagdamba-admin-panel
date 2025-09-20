@@ -8,11 +8,37 @@ import {
   Users, 
   TrendingUp,
   Calendar,
-  Phone,
-  Mail
+  BarChart4
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { TopNavbar } from '@/components/layout/TopNavbar';
+import { useAuth } from '@/contexts/AuthContext';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Bar, Doughnut } from 'react-chartjs-2';
+
+// Register Chart.js components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 interface DashboardStats {
   totalReviews: number;
@@ -22,13 +48,35 @@ interface DashboardStats {
   totalAdmins: number;
 }
 
+interface ChartData {
+  ratingDistribution: {
+    labels: string[];
+    data: number[];
+  };
+  categoryDistribution: {
+    labels: string[];
+    data: number[];
+  };
+}
+
 const Dashboard = () => {
+  const { admin } = useAuth();
   const [stats, setStats] = useState<DashboardStats>({
     totalReviews: 0,
     averageRating: 0,
     totalContacts: 0,
     totalMenuItems: 0,
     totalAdmins: 0,
+  });
+  const [chartData, setChartData] = useState<ChartData>({
+    ratingDistribution: {
+      labels: ['1★', '2★', '3★', '4★', '5★'],
+      data: [0, 0, 0, 0, 0],
+    },
+    categoryDistribution: {
+      labels: [],
+      data: [],
+    }
   });
   const [loading, setLoading] = useState(true);
 
@@ -48,7 +96,7 @@ const Dashboard = () => {
         adminsResult
       ] = await Promise.all([
         supabase.from('reviews').select('rating'),
-        supabase.from('contact_form').select('id'), // Updated to contact_form table
+        supabase.from('contact_form').select('id'), 
         supabase.from('menu_items').select('*'),
         supabase.from('admin').select('id')
       ]);
@@ -66,9 +114,42 @@ const Dashboard = () => {
       setStats({
         totalReviews,
         averageRating: Math.round(averageRating * 10) / 10,
-        totalContacts: contactFormResult.data?.length || 0, // Using data from contact_form
+        totalContacts: contactFormResult.data?.length || 0,
         totalMenuItems: menuItems.length,
         totalAdmins: adminsResult.data?.length || 0,
+      });
+
+      // Process rating distribution
+      const ratingCounts = [0, 0, 0, 0, 0]; // For ratings 1-5
+      
+      reviews.forEach(review => {
+        const rating = Math.round(review.rating);
+        if (rating >= 1 && rating <= 5) {
+          ratingCounts[rating - 1]++;
+        }
+      });
+
+      // Process menu item categories
+      const categoryMap = new Map();
+      
+      menuItems.forEach(item => {
+        const category = item.category || 'Uncategorized';
+        categoryMap.set(category, (categoryMap.get(category) || 0) + 1);
+      });
+      
+      const categoryLabels = Array.from(categoryMap.keys());
+      const categoryData = Array.from(categoryMap.values());
+      
+      // Update chart data
+      setChartData({
+        ratingDistribution: {
+          labels: ['1★', '2★', '3★', '4★', '5★'],
+          data: ratingCounts
+        },
+        categoryDistribution: {
+          labels: categoryLabels,
+          data: categoryData
+        }
       });
 
     } catch (error) {
@@ -94,7 +175,7 @@ const Dashboard = () => {
       bgColor: 'bg-primary/10',
     },
     {
-      title: 'Contact Form',
+      title: 'Potential Clients',
       value: stats.totalContacts,
       icon: MessageSquare,
       color: 'text-blue-500',
@@ -116,6 +197,97 @@ const Dashboard = () => {
     }
   ];
 
+  // Chart configuration for category distribution
+  const categoryDistributionConfig = {
+    data: {
+      labels: chartData.categoryDistribution.labels,
+      datasets: [
+        {
+          label: 'Menu Items',
+          data: chartData.categoryDistribution.data,
+          backgroundColor: [
+            'rgba(243, 196, 73, 0.7)',
+            'rgba(107, 31, 31, 0.7)',
+            'rgba(46, 204, 113, 0.7)',
+            'rgba(231, 76, 60, 0.7)',
+            'rgba(52, 152, 219, 0.7)',
+            'rgba(142, 68, 173, 0.7)',
+            'rgba(41, 128, 185, 0.7)',
+            'rgba(39, 174, 96, 0.7)',
+            'rgba(211, 84, 0, 0.7)',
+            'rgba(192, 57, 43, 0.7)',
+          ],
+          borderColor: 'rgba(15, 14, 14, 0.6)',
+          borderWidth: 2
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'right' as const,
+          labels: {
+            color: '#FFF9F2'
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: 'rgba(255, 255, 255, 0.05)'
+          },
+          ticks: {
+            color: '#BDB3A3'
+          }
+        },
+        x: {
+          grid: {
+            color: 'rgba(255, 255, 255, 0.05)'
+          },
+          ticks: {
+            color: '#BDB3A3'
+          }
+        }
+      }
+    }
+  };
+
+  const ratingDistributionConfig = {
+    data: {
+      labels: chartData.ratingDistribution.labels,
+      datasets: [
+        {
+          label: 'Ratings',
+          data: chartData.ratingDistribution.data,
+          backgroundColor: [
+            'rgba(231, 76, 60, 0.7)',
+            'rgba(230, 126, 34, 0.7)',
+            'rgba(241, 196, 15, 0.7)',
+            'rgba(46, 204, 113, 0.7)',
+            'rgba(52, 152, 219, 0.7)'
+          ],
+          borderWidth: 2,
+          borderColor: 'rgba(15, 14, 14, 0.6)'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'right' as const,
+          labels: {
+            color: '#FFF9F2'
+          }
+        }
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <TopNavbar />
@@ -126,7 +298,10 @@ const Dashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold">Dashboard</h1>
-              <p className="text-muted-foreground">Welcome to Jagdamba Caterers Admin Panel</p>
+              <p className="text-muted-foreground">
+                Welcome to <span className="brand-text text-primary">Jagdamba Caterers</span> Admin Panel
+                {admin && <span>, <span className="font-semibold">{admin.username}</span></span>}
+              </p>
             </div>
             <Badge variant="secondary" className="bg-primary/10 text-primary">
               <Calendar className="w-4 h-4 mr-2" />
@@ -153,7 +328,45 @@ const Dashboard = () => {
             ))}
           </div>
 
-          {/* You can add additional dashboard content here if needed */}
+          {/* Charts Section */}
+          <div className="space-y-6">
+            <h2 className="text-xl font-semibold flex items-center">
+              <BarChart4 className="mr-2 h-5 w-5 text-primary" />
+              Analytics Reports
+            </h2>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Menu Items by Category Chart */}
+              <Card className="admin-card animate-fade-in">
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <ChefHat className="mr-2 h-5 w-5 text-green-500" />
+                    Menu Items by Category
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-80">
+                    <Bar data={categoryDistributionConfig.data} options={categoryDistributionConfig.options} />
+                  </div>
+                </CardContent>
+              </Card>
+              
+              {/* Rating Distribution Chart */}
+              <Card className="admin-card animate-fade-in">
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Star className="mr-2 h-5 w-5 text-yellow-500" />
+                    Rating Distribution
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="flex justify-center">
+                  <div className="h-80 w-full">
+                    <Doughnut data={ratingDistributionConfig.data} options={ratingDistributionConfig.options} />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </div>
       </main>
     </div>

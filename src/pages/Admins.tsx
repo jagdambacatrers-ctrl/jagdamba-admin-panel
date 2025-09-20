@@ -25,8 +25,11 @@ const Admins = () => {
     username: '',
     email: '',
     password: '',
+    confirmPassword: '',
     profile_picture: '',
   });
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   useEffect(() => {
     fetchAdmins();
@@ -57,13 +60,62 @@ const Admins = () => {
     e.preventDefault();
     setSaving(true);
 
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast({
+        variant: "destructive",
+        title: "Invalid Email",
+        description: "Please enter a valid email address.",
+      });
+      setSaving(false);
+      return;
+    }
+
+    // Password match validation
+    if (formData.password !== formData.confirmPassword) {
+      toast({
+        variant: "destructive",
+        title: "Password Mismatch",
+        description: "Passwords do not match.",
+      });
+      setSaving(false);
+      return;
+    }
+
     try {
+      let profilePictureUrl = formData.profile_picture;
+      // If a new image file is selected, upload it
+      if (imageFile) {
+        // Validate file type
+        if (!imageFile.type.startsWith('image/')) {
+          throw new Error('Please select a valid image file');
+        }
+        // Size validation (max 5MB)
+        if (imageFile.size > 5 * 1024 * 1024) {
+          throw new Error('Image size should be less than 5MB');
+        }
+        const fileName = `${Date.now()}-${imageFile.name.replace(/\s+/g, '_')}`;
+        const { error: uploadError } = await supabase.storage
+          .from('Admins')
+          .upload(fileName, imageFile, {
+            cacheControl: '3600',
+            upsert: true,
+            contentType: imageFile.type
+          });
+        if (uploadError) throw uploadError;
+        const { data: { publicUrl } } = supabase.storage
+          .from('Admins')
+          .getPublicUrl(fileName);
+        profilePictureUrl = publicUrl;
+      }
+
       if (editingAdmin) {
         // Update existing admin (don't update password if empty)
         const updateData = {
           username: formData.username,
           email: formData.email,
-          profile_picture: formData.profile_picture,
+          profile_picture: profilePictureUrl,
           ...(formData.password && { password: formData.password })
         };
 
@@ -79,10 +131,15 @@ const Admins = () => {
         if (!formData.password) {
           throw new Error('Password is required for new admin');
         }
-
+        const insertData = {
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          profile_picture: profilePictureUrl,
+        };
         const { error } = await supabase
           .from('admin')
-          .insert([formData]);
+          .insert([insertData]);
 
         if (error) throw error;
         toast({ title: "Admin created successfully" });
@@ -136,8 +193,11 @@ const Admins = () => {
       username: '',
       email: '',
       password: '',
+      confirmPassword: '',
       profile_picture: '',
     });
+    setImageFile(null);
+    setImagePreview(null);
     setEditingAdmin(null);
   };
 
@@ -224,14 +284,35 @@ const Admins = () => {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="profile_picture">Profile Picture URL</Label>
+                      <Label htmlFor="profile_picture">Profile Picture</Label>
                       <Input
                         id="profile_picture"
-                        type="url"
-                        value={formData.profile_picture}
-                        onChange={(e) => setFormData({ ...formData, profile_picture: e.target.value })}
+                        type="file"
+                        accept="image/*"
+                        onChange={e => {
+                          if (e.target.files && e.target.files[0]) {
+                            setImageFile(e.target.files[0]);
+                            const reader = new FileReader();
+                            reader.onloadend = () => setImagePreview(reader.result as string);
+                            reader.readAsDataURL(e.target.files[0]);
+                          }
+                        }}
                         className="admin-input"
-                        placeholder="https://example.com/image.jpg"
+                      />
+                      {imagePreview && (
+                        <img src={imagePreview} alt="Preview" className="mt-2 w-20 h-20 object-cover rounded" />
+                      )}
+                    </div>
+                    <div>
+                      <Label htmlFor="confirmPassword">Confirm Password *</Label>
+                      <Input
+                        id="confirmPassword"
+                        type="password"
+                        value={formData.confirmPassword}
+                        onChange={e => setFormData({ ...formData, confirmPassword: e.target.value })}
+                        className="admin-input"
+                        required={!editingAdmin}
+                        placeholder="Confirm password"
                       />
                     </div>
                     <div className="flex space-x-2 pt-4">
