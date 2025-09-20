@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Users, Plus, Edit, Trash2, Loader2, Shield, User } from 'lucide-react';
-import { AdminSidebar } from '@/components/layout/AdminSidebar';
+import { TopNavbar } from '@/components/layout/TopNavbar';
 import { supabase, Admin } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -158,11 +158,11 @@ const Admins = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-background">
-      <AdminSidebar />
+    <div className="min-h-screen bg-background">
+      <TopNavbar />
       
-      <main className="flex-1 lg:ml-72 xl:ml-72">
-        <div className="p-6 space-y-6">
+      <main className="flex-1">
+        <div className="p-4 space-y-6">
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
