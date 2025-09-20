@@ -22,12 +22,12 @@ const MenuItems = () => {
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
+    hindi_name: '',
+    english_name: '',
     description: '',
     price: '',
     category: '',
-    available: true,
-    image_url: '',
+    image: '',
   });
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const MenuItems = () => {
       const { data, error } = await supabase
         .from('menu_items')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('date_added', { ascending: false });
 
       if (error) throw error;
       setMenuItems(data || []);
@@ -98,7 +98,7 @@ const MenuItems = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: number) => {
     try {
       const { error } = await supabase
         .from('menu_items')
@@ -117,35 +117,16 @@ const MenuItems = () => {
     }
   };
 
-  const toggleAvailability = async (id: string, available: boolean) => {
-    try {
-      const { error } = await supabase
-        .from('menu_items')
-        .update({ available: !available })
-        .eq('id', id);
-
-      if (error) throw error;
-      toast({ 
-        title: `Menu item ${!available ? 'enabled' : 'disabled'} successfully`
-      });
-      fetchMenuItems();
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to update menu item",
-      });
-    }
-  };
+  // Remove this function since there's no 'available' field in the actual schema
 
   const resetForm = () => {
     setFormData({
-      name: '',
+      hindi_name: '',
+      english_name: '',
       description: '',
       price: '',
       category: '',
-      available: true,
-      image_url: '',
+      image: '',
     });
     setEditingItem(null);
   };
@@ -153,12 +134,12 @@ const MenuItems = () => {
   const openEditDialog = (item: MenuItem) => {
     setEditingItem(item);
     setFormData({
-      name: item.name,
+      hindi_name: item.hindi_name,
+      english_name: item.english_name || '',
       description: item.description || '',
       price: item.price.toString(),
       category: item.category || '',
-      available: item.available,
-      image_url: item.image_url || '',
+      image: item.image || '',
     });
     setDialogOpen(true);
   };
@@ -175,7 +156,6 @@ const MenuItems = () => {
     }).format(price);
   };
 
-  const availableItems = menuItems.filter(item => item.available).length;
   const totalItems = menuItems.length;
 
   return (
@@ -192,8 +172,8 @@ const MenuItems = () => {
             </div>
             <div className="flex items-center space-x-4">
               <div className="text-right">
-                <p className="text-sm text-muted-foreground">Available Items</p>
-                <p className="text-2xl font-bold text-primary">{availableItems}/{totalItems}</p>
+                <p className="text-sm text-muted-foreground">Total Items</p>
+                <p className="text-2xl font-bold text-primary">{totalItems}</p>
               </div>
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogTrigger asChild>
@@ -211,25 +191,35 @@ const MenuItems = () => {
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="name">Item Name *</Label>
+                        <Label htmlFor="hindi_name">Hindi Name *</Label>
                         <Input
-                          id="name"
-                          value={formData.name}
-                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                          id="hindi_name"
+                          value={formData.hindi_name}
+                          onChange={(e) => setFormData({ ...formData, hindi_name: e.target.value })}
                           className="admin-input"
                           required
                         />
                       </div>
                       <div>
-                        <Label htmlFor="category">Category</Label>
+                        <Label htmlFor="english_name">English Name</Label>
                         <Input
-                          id="category"
-                          value={formData.category}
-                          onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                          id="english_name"
+                          value={formData.english_name}
+                          onChange={(e) => setFormData({ ...formData, english_name: e.target.value })}
                           className="admin-input"
-                          placeholder="e.g., Main Course, Dessert"
                         />
                       </div>
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="category">Category</Label>
+                      <Input
+                        id="category"
+                        value={formData.category}
+                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                        className="admin-input"
+                        placeholder="e.g., Main Course, Dessert"
+                      />
                     </div>
                     
                     <div>
@@ -243,37 +233,27 @@ const MenuItems = () => {
                       />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="price">Price (₹) *</Label>
-                        <Input
-                          id="price"
-                          type="number"
-                          step="0.01"
-                          min="0"
-                          value={formData.price}
-                          onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                          className="admin-input"
-                          required
-                        />
-                      </div>
-                      <div className="flex items-center space-x-2 pt-6">
-                        <Switch
-                          id="available"
-                          checked={formData.available}
-                          onCheckedChange={(checked) => setFormData({ ...formData, available: checked })}
-                        />
-                        <Label htmlFor="available">Available</Label>
-                      </div>
+                    <div>
+                      <Label htmlFor="price">Price (₹) *</Label>
+                      <Input
+                        id="price"
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        value={formData.price}
+                        onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                        className="admin-input"
+                        required
+                      />
                     </div>
 
                     <div>
-                      <Label htmlFor="image_url">Image URL</Label>
+                      <Label htmlFor="image">Image URL</Label>
                       <Input
-                        id="image_url"
+                        id="image"
                         type="url"
-                        value={formData.image_url}
-                        onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                        value={formData.image}
+                        onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                         className="admin-input"
                         placeholder="https://example.com/image.jpg"
                       />
@@ -324,10 +304,9 @@ const MenuItems = () => {
                     <TableHeader>
                       <TableRow>
                         <TableHead>Image</TableHead>
-                        <TableHead>Name</TableHead>
+                        <TableHead>Names</TableHead>
                         <TableHead>Category</TableHead>
                         <TableHead>Price</TableHead>
-                        <TableHead>Status</TableHead>
                         <TableHead>Created</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
@@ -336,10 +315,10 @@ const MenuItems = () => {
                       {menuItems.map((item) => (
                         <TableRow key={item.id}>
                           <TableCell>
-                            {item.image_url ? (
+                            {item.image ? (
                               <img
-                                src={item.image_url}
-                                alt={item.name}
+                                src={item.image}
+                                alt={item.hindi_name}
                                 className="w-12 h-12 object-cover rounded-lg"
                                 onError={(e) => {
                                   e.currentTarget.style.display = 'none';
@@ -353,9 +332,12 @@ const MenuItems = () => {
                           </TableCell>
                           <TableCell>
                             <div>
-                              <p className="font-medium">{item.name}</p>
+                              <p className="font-medium">{item.hindi_name}</p>
+                              {item.english_name && (
+                                <p className="text-sm text-muted-foreground">{item.english_name}</p>
+                              )}
                               {item.description && (
-                                <p className="text-sm text-muted-foreground line-clamp-1">
+                                <p className="text-xs text-muted-foreground line-clamp-1">
                                   {item.description}
                                 </p>
                               )}
@@ -372,18 +354,7 @@ const MenuItems = () => {
                             {formatPrice(item.price)}
                           </TableCell>
                           <TableCell>
-                            <div className="flex items-center space-x-2">
-                              <Switch
-                                checked={item.available}
-                                onCheckedChange={() => toggleAvailability(item.id, item.available)}
-                              />
-                              <Badge variant={item.available ? "default" : "secondary"}>
-                                {item.available ? 'Available' : 'Unavailable'}
-                              </Badge>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            {new Date(item.created_at).toLocaleDateString()}
+                            {new Date(item.date_added).toLocaleDateString()}
                           </TableCell>
                           <TableCell className="text-right">
                             <div className="flex space-x-2 justify-end">
@@ -404,7 +375,7 @@ const MenuItems = () => {
                                   <AlertDialogHeader>
                                     <AlertDialogTitle>Delete Menu Item</AlertDialogTitle>
                                     <AlertDialogDescription>
-                                      Are you sure you want to delete "{item.name}"? This action cannot be undone.
+                                      Are you sure you want to delete "{item.hindi_name}"? This action cannot be undone.
                                     </AlertDialogDescription>
                                   </AlertDialogHeader>
                                   <AlertDialogFooter>

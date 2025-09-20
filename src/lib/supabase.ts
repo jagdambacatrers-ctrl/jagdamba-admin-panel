@@ -17,9 +17,15 @@ export interface Admin {
 
 export interface Review {
   id: string;
-  client_name: string;
-  review_text: string;
+  name: string;
+  review: string;
   rating: number;
+  email?: string;
+  event_type?: string;
+  event_date?: string;
+  review_type?: string;
+  photo_url?: string;
+  submitted_at: string;
   created_at: string;
 }
 
@@ -33,14 +39,15 @@ export interface Contact {
 }
 
 export interface MenuItem {
-  id: string;
-  name: string;
+  id: number;
+  hindi_name: string;
+  english_name?: string;
   description?: string;
   price: number;
   category?: string;
-  available: boolean;
-  image_url?: string;
-  created_at: string;
+  image?: string;
+  date_added: string;
+  date_updated: string;
 }
 
 // Auth functions

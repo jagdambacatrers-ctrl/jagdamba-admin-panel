@@ -21,8 +21,8 @@ const Reviews = () => {
   const [editingReview, setEditingReview] = useState<Review | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
-    client_name: '',
-    review_text: '',
+    name: '',
+    review: '',
     rating: 5,
   });
 
@@ -110,8 +110,8 @@ const Reviews = () => {
 
   const resetForm = () => {
     setFormData({
-      client_name: '',
-      review_text: '',
+      name: '',
+      review: '',
       rating: 5,
     });
     setEditingReview(null);
@@ -120,8 +120,8 @@ const Reviews = () => {
   const openEditDialog = (review: Review) => {
     setEditingReview(review);
     setFormData({
-      client_name: review.client_name,
-      review_text: review.review_text,
+      name: review.name,
+      review: review.review,
       rating: review.rating,
     });
     setDialogOpen(true);
@@ -170,21 +170,21 @@ const Reviews = () => {
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <Label htmlFor="client_name">Client Name</Label>
+                    <Label htmlFor="name">Client Name</Label>
                     <Input
-                      id="client_name"
-                      value={formData.client_name}
-                      onChange={(e) => setFormData({ ...formData, client_name: e.target.value })}
+                      id="name"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       className="admin-input"
                       required
                     />
                   </div>
                   <div>
-                    <Label htmlFor="review_text">Review Text</Label>
+                    <Label htmlFor="review">Review Text</Label>
                     <Textarea
-                      id="review_text"
-                      value={formData.review_text}
-                      onChange={(e) => setFormData({ ...formData, review_text: e.target.value })}
+                      id="review"
+                      value={formData.review}
+                      onChange={(e) => setFormData({ ...formData, review: e.target.value })}
                       className="admin-input min-h-[100px]"
                       required
                     />
@@ -251,9 +251,9 @@ const Reviews = () => {
                   <TableBody>
                     {reviews.map((review) => (
                       <TableRow key={review.id}>
-                        <TableCell className="font-medium">{review.client_name}</TableCell>
+                        <TableCell className="font-medium">{review.name}</TableCell>
                         <TableCell className="max-w-md">
-                          <p className="line-clamp-2">{review.review_text}</p>
+                          <p className="line-clamp-2">{review.review}</p>
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center space-x-1">
@@ -262,7 +262,7 @@ const Reviews = () => {
                           </div>
                         </TableCell>
                         <TableCell>
-                          {new Date(review.created_at).toLocaleDateString()}
+                          {new Date(review.submitted_at || review.created_at).toLocaleDateString()}
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="flex space-x-2 justify-end">
