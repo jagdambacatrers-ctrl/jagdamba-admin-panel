@@ -46,7 +46,7 @@ const Contacts = () => {
         .eq('id', id);
 
       if (error) throw error;
-      toast({ title: "Contact deleted successfully" });
+      toast({ title: "Customer inquiry deleted successfully" });
       fetchContacts();
     } catch (error) {
       toast({
@@ -81,12 +81,12 @@ const Contacts = () => {
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold">Contacts Management</h1>
-              <p className="text-muted-foreground">Manage customer inquiries and communications</p>
+              <h1 className="text-3xl font-bold">Potential Clients</h1>
+              <p className="text-muted-foreground">Manage customer inquiries from website contact forms</p>
             </div>
             <div className="flex items-center space-x-4">
               <div className="text-right">
-                <p className="text-sm text-muted-foreground">Total Contacts</p>
+                <p className="text-sm text-muted-foreground">Website Inquiries</p>
                 <p className="text-2xl font-bold text-primary">{contacts.length}</p>
               </div>
             </div>
@@ -97,19 +97,19 @@ const Contacts = () => {
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <MessageSquare className="w-5 h-5" />
-                <span>All Contacts</span>
+                <span>Customer Inquiries from Website</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
               {loading ? (
                 <div className="text-center py-8">
                   <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
-                  <p className="text-muted-foreground">Loading contacts...</p>
+                  <p className="text-muted-foreground">Loading customer inquiries...</p>
                 </div>
               ) : contacts.length === 0 ? (
                 <div className="text-center py-8">
                   <MessageSquare className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-muted-foreground">No contacts found</p>
+                  <p className="text-muted-foreground">No customer inquiries yet</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
@@ -193,10 +193,10 @@ const Contacts = () => {
                                 </AlertDialogTrigger>
                                 <AlertDialogContent>
                                   <AlertDialogHeader>
-                                    <AlertDialogTitle>Delete Contact</AlertDialogTitle>
+                                    <AlertDialogTitle>Delete Customer Inquiry</AlertDialogTitle>
                                     <AlertDialogDescription>
-                                      Are you sure you want to delete the contact from {contact.name}? 
-                                      This action cannot be undone.
+                                      Are you sure you want to delete the inquiry from {contact.name}? 
+                                      This action cannot be undone and you will lose this potential client information.
                                     </AlertDialogDescription>
                                   </AlertDialogHeader>
                                   <AlertDialogFooter>
