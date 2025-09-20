@@ -18,6 +18,27 @@ const Contacts = () => {
   }, []);
 
   const fetchContacts = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('contact_form')
+        .select('*')
+        .order('submitted_at', { ascending: false });
+
+      if (error) throw error;
+      setContacts(data || []);
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to fetch contacts",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
     <div className="min-h-screen bg-background flex flex-col">
       <TopNavbar />
       <main className="flex-1 w-full">
@@ -181,63 +202,7 @@ const Contacts = () => {
         </div>
       </main>
     </div>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => openEmail(contact.email, contact.name, contact.event_type, contact.event_date)}
-                                className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
-                                title="Send Email"
-                              >
-                                <Mail className="w-4 h-4" />
-                              </Button>
-                              
-                              {/* Delete Button */}
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                                    title="Delete Contact"
-                                  >
-                                    <Trash2 className="w-4 h-4" />
-                                  </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle>Delete Customer Inquiry</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                      Are you sure you want to delete the inquiry from {contact.name}? 
-                                      This action cannot be undone and you will lose this potential client information.
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction
-                                      onClick={() => handleDelete(contact.id)}
-                                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                                    >
-                                      Delete
-                                    </AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-
-        </div>
-      </main>
-    </div>
   );
-};
+}
 
 export default Contacts;

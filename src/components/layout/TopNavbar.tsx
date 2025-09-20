@@ -36,7 +36,7 @@ export const TopNavbar = () => {
           {/* Logo */}
           <div className="flex items-center space-x-3">
             <div className="flex items-center justify-center">
-                          <img src="/full_logo.png" alt="Logo" className="h-14 w-auto" />
+                          <img src="/logo.png" alt="Logo" className="h-14 w-auto" />
             </div>
             <span className="text-lg font-semibold brand-text">Jagdamba Admin</span>
           </div>

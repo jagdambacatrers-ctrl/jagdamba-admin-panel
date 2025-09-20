@@ -20,19 +20,24 @@ const PotentialClients = () => {
 
   const fetchContacts = async () => {
     try {
-      setLoading(true);
       const { data, error } = await supabase
         .from('contact_form')
         .select('*')
         .order('submitted_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+
+      console.log('Fetched contacts:', data);
       setContacts(data || []);
     } catch (error) {
+      console.error('Fetch error:', error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to fetch potential client data",
+        title: "Error fetching contacts",
+        description: error instanceof Error ? error.message : "There was an error loading the contacts. Please try again.",
       });
     } finally {
       setLoading(false);
@@ -42,62 +47,70 @@ const PotentialClients = () => {
   const handleDelete = async (id: string) => {
     try {
       const { error } = await supabase
-        .from('contact_form')
+        .from('contacts')
         .delete()
         .eq('id', id);
 
-      if (error) throw error;
-      toast({ title: "Potential client deleted successfully" });
-      fetchContacts();
+      if (error) {
+        throw error;
+      }
+
+      setContacts(contacts.filter(contact => contact.id !== id));
+      toast({
+        title: "Contact deleted",
+        description: "The potential client has been removed from the list.",
+      });
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to delete potential client",
+        title: "Error deleting contact",
+        description: "There was an error deleting the contact. Please try again.",
       });
     }
   };
 
   const openWhatsApp = (phone: string, name: string, eventType: string) => {
-    const message = encodeURIComponent(`Hello ${name}, thank you for your ${eventType} inquiry with Jagdamba Caterers! How can we assist you today?`);
-    window.open(`https://wa.me/${phone.replace(/\D/g, '')}?text=${message}`, '_blank');
+    const message = `Hello ${name}, thank you for your interest in our ${eventType.toLowerCase()} services. How can we help you?`;
+    const encodedMessage = encodeURIComponent(message);
+    const formattedPhone = phone.replace(/\\D/g, '');
+    window.open(`https://wa.me/${formattedPhone}?text=${encodedMessage}`, '_blank');
   };
 
   const openPhone = (phone: string) => {
-    window.open(`tel:${phone}`, '_self');
+    window.location.href = `tel:${phone}`;
   };
 
   const openEmail = (email: string, name: string, eventType: string, eventDate?: string) => {
-    const subject = encodeURIComponent(`Re: Your ${eventType} inquiry - Jagdamba Caterers`);
-    const dateInfo = eventDate ? `\n\nEvent Date: ${eventDate}` : '';
-    const body = encodeURIComponent(`Dear ${name},\n\nThank you for your ${eventType} inquiry with Jagdamba Caterers. We have received your request and will get back to you soon.${dateInfo}\n\nBest regards,\nJagdamba Caterers Team`);
-    window.open(`mailto:${email}?subject=${subject}&body=${body}`, '_self');
+    const subject = `${eventType} Inquiry - Jagdamba Caterers`;
+    const body = `Dear ${name},\n\nThank you for your interest in our ${eventType.toLowerCase()} services${eventDate ? ` for ${eventDate}` : ''}.`;
+    const encodedSubject = encodeURIComponent(subject);
+    const encodedBody = encodeURIComponent(body);
+    window.location.href = `mailto:${email}?subject=${encodedSubject}&body=${encodedBody}`;
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <TopNavbar />
-      
-      <main className="flex-1">
-        <div className="p-4 space-y-6">
+      <main className="flex-1 w-full">
+        <div className="p-2 sm:p-4 space-y-6 max-w-5xl mx-auto w-full">
           {/* Header */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
             <div>
-              <h1 className="text-3xl font-bold">Potential Clients</h1>
-              <p className="text-muted-foreground">Manage inquiries from potential clients</p>
+              <h1 className="text-2xl sm:text-3xl font-bold">Potential Clients</h1>
+              <p className="text-muted-foreground text-sm sm:text-base">Manage inquiries from potential clients</p>
             </div>
             <div className="flex items-center space-x-4">
               <div className="text-right">
-                <p className="text-sm text-muted-foreground">Potential Clients</p>
-                <p className="text-2xl font-bold text-primary">{contacts.length}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Potential Clients</p>
+                <p className="text-xl sm:text-2xl font-bold text-primary">{contacts.length}</p>
               </div>
             </div>
           </div>
 
           {/* Potential Clients Table */}
-          <Card className="admin-card">
+          <Card className="admin-card w-full">
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
+              <CardTitle className="flex items-center space-x-2 text-base sm:text-lg">
                 <MessageSquare className="w-5 h-5" />
                 <span>Potential Client Inquiries</span>
               </CardTitle>
@@ -115,7 +128,7 @@ const PotentialClients = () => {
                 </div>
               ) : (
                 <div className="overflow-x-auto">
-                  <Table>
+                  <Table className="min-w-[700px]">
                     <TableHeader>
                       <TableRow>
                         <TableHead>Client Info</TableHead>
@@ -131,37 +144,37 @@ const PotentialClients = () => {
                         <TableRow key={contact.id}>
                           <TableCell>
                             <div>
-                              <p className="font-medium">{contact.name}</p>
-                              <p className="text-sm text-muted-foreground">{contact.email}</p>
-                              <p className="text-sm text-muted-foreground">{contact.phone}</p>
+                              <p className="font-medium text-sm sm:text-base">{contact.name}</p>
+                              <p className="text-xs sm:text-sm text-muted-foreground">{contact.email}</p>
+                              <p className="text-xs sm:text-sm text-muted-foreground">{contact.phone}</p>
                             </div>
                           </TableCell>
                           <TableCell>
                             <div>
-                              <p className="font-medium capitalize">{contact.event_type}</p>
+                              <p className="font-medium capitalize text-sm sm:text-base">{contact.event_type}</p>
                               {contact.event_date && (
-                                <p className="text-sm text-muted-foreground">📅 {contact.event_date}</p>
+                                <p className="text-xs sm:text-sm text-muted-foreground">📅 {contact.event_date}</p>
                               )}
                               {contact.guest_count && (
-                                <p className="text-sm text-muted-foreground">👥 {contact.guest_count} guests</p>
+                                <p className="text-xs sm:text-sm text-muted-foreground">👥 {contact.guest_count} guests</p>
                               )}
                             </div>
                           </TableCell>
                           <TableCell>
                             <div className="space-y-1">
-                              <p className="text-sm">{contact.email}</p>
-                              <p className="text-sm">{contact.phone}</p>
+                              <p className="text-xs sm:text-sm">{contact.email}</p>
+                              <p className="text-xs sm:text-sm">{contact.phone}</p>
                             </div>
                           </TableCell>
                           <TableCell className="max-w-xs">
                             {contact.message ? (
-                              <p className="line-clamp-2">{contact.message}</p>
+                              <p className="line-clamp-2 text-xs sm:text-sm">{contact.message}</p>
                             ) : (
-                              <span className="text-muted-foreground">No message</span>
+                              <span className="text-muted-foreground text-xs sm:text-sm">No message</span>
                             )}
                           </TableCell>
                           <TableCell>
-                            {new Date(contact.submitted_at).toLocaleDateString()}
+                            <span className="text-xs sm:text-sm">{new Date(contact.submitted_at).toLocaleDateString()}</span>
                           </TableCell>
                           <TableCell className="text-right">
                             <div className="flex space-x-2 justify-end">
@@ -175,7 +188,6 @@ const PotentialClients = () => {
                               >
                                 <WhatsAppIcon className="w-4 h-4" />
                               </Button>
-                              
                               {/* Phone Button */}
                               <Button
                                 variant="ghost"
@@ -186,7 +198,6 @@ const PotentialClients = () => {
                               >
                                 <Phone className="w-4 h-4" />
                               </Button>
-                              
                               {/* Email Button */}
                               <Button
                                 variant="ghost"
@@ -197,7 +208,6 @@ const PotentialClients = () => {
                               >
                                 <Mail className="w-4 h-4" />
                               </Button>
-                              
                               {/* Delete Button */}
                               <AlertDialog>
                                 <AlertDialogTrigger asChild>
@@ -239,8 +249,6 @@ const PotentialClients = () => {
               )}
             </CardContent>
           </Card>
-
-
         </div>
       </main>
     </div>

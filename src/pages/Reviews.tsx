@@ -150,25 +150,25 @@ const Reviews = () => {
       <main className="flex-1">
         <div className="p-4 space-y-6">
           {/* Header */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold">Reviews Management</h1>
-              <p className="text-muted-foreground">Manage customer reviews and ratings</p>
+              <h1 className="text-2xl sm:text-3xl font-bold">Reviews Management</h1>
+              <p className="text-sm sm:text-base text-muted-foreground">Manage customer reviews and ratings</p>
             </div>
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
               <DialogTrigger asChild>
-                <Button onClick={openCreateDialog} className="admin-button-primary">
+                <Button onClick={openCreateDialog} className="w-full sm:w-auto admin-button-primary">
                   <Plus className="w-4 h-4 mr-2" />
                   Add Review
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
+              <DialogContent className="w-[95vw] sm:w-full sm:max-w-md">
                 <DialogHeader>
-                  <DialogTitle>
+                  <DialogTitle className="text-lg sm:text-xl">
                     {editingReview ? 'Edit Review' : 'Add New Review'}
                   </DialogTitle>
                 </DialogHeader>
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4 mt-4">
                   <div>
                     <Label htmlFor="name">Client Name</Label>
                     <Input
@@ -202,8 +202,8 @@ const Reviews = () => {
                       required
                     />
                   </div>
-                  <div className="flex space-x-2 pt-4">
-                    <Button type="submit" disabled={saving} className="flex-1">
+                  <div className="flex flex-col sm:flex-row gap-2 sm:space-x-2 pt-4">
+                    <Button type="submit" disabled={saving} className="w-full sm:flex-1">
                       {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
                       {editingReview ? 'Update' : 'Create'}
                     </Button>
@@ -211,7 +211,7 @@ const Reviews = () => {
                       type="button"
                       variant="outline"
                       onClick={() => setDialogOpen(false)}
-                      className="flex-1"
+                      className="w-full sm:flex-1"
                     >
                       Cancel
                     </Button>
@@ -221,10 +221,10 @@ const Reviews = () => {
             </Dialog>
           </div>
 
-          {/* Reviews Table */}
+          {/* Reviews Display */}
           <Card className="admin-card">
             <CardHeader>
-              <CardTitle>All Reviews ({reviews.length})</CardTitle>
+              <CardTitle className="text-lg sm:text-xl">All Reviews ({reviews.length})</CardTitle>
             </CardHeader>
             <CardContent>
               {loading ? (
@@ -238,71 +238,140 @@ const Reviews = () => {
                   <p className="text-muted-foreground">No reviews found</p>
                 </div>
               ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Client</TableHead>
-                      <TableHead>Review</TableHead>
-                      <TableHead>Rating</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {reviews.map((review) => (
-                      <TableRow key={review.id}>
-                        <TableCell className="font-medium">{review.name}</TableCell>
-                        <TableCell className="max-w-md">
-                          <p className="line-clamp-2">{review.review}</p>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center space-x-1">
-                            {renderStars(review.rating)}
-                            <span className="ml-2 text-sm font-medium">{review.rating}/5</span>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          {new Date(review.submitted_at || review.created_at).toLocaleDateString()}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex space-x-2 justify-end">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => openEditDialog(review)}
-                            >
-                              <Edit className="w-4 h-4" />
-                            </Button>
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
-                                <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
-                                  <Trash2 className="w-4 h-4" />
+                <>
+                  {/* Desktop Table View */}
+                  <div className="hidden md:block">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Client</TableHead>
+                          <TableHead>Review</TableHead>
+                          <TableHead>Rating</TableHead>
+                          <TableHead>Date</TableHead>
+                          <TableHead className="text-right">Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {reviews.map((review) => (
+                          <TableRow key={review.id}>
+                            <TableCell className="font-medium">{review.name}</TableCell>
+                            <TableCell className="max-w-md">
+                              <p className="line-clamp-2">{review.review}</p>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center space-x-1">
+                                {renderStars(review.rating)}
+                                <span className="ml-2 text-sm font-medium">{review.rating}/5</span>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              {new Date(review.submitted_at || review.created_at).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <div className="flex space-x-2 justify-end">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => openEditDialog(review)}
+                                >
+                                  <Edit className="w-4 h-4" />
                                 </Button>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Delete Review</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    Are you sure you want to delete this review? This action cannot be undone.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                  <AlertDialogAction
-                                    onClick={() => handleDelete(review.id)}
-                                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                                  >
-                                    Delete
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+                                      <Trash2 className="w-4 h-4" />
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Delete Review</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        Are you sure you want to delete this review? This action cannot be undone.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                      <AlertDialogAction
+                                        onClick={() => handleDelete(review.id)}
+                                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                      >
+                                        Delete
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+
+                  {/* Mobile Card View */}
+                  <div className="space-y-4 md:hidden">
+                    {reviews.map((review) => (
+                      <Card key={review.id} className="overflow-hidden">
+                        <CardContent className="p-4">
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-between">
+                              <h3 className="font-semibold">{review.name}</h3>
+                              <div className="flex space-x-2">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => openEditDialog(review)}
+                                  className="h-8 w-8 p-0"
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent className="w-[95vw] rounded-lg">
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Delete Review</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        Are you sure you want to delete this review? This action cannot be undone.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter className="flex-col space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
+                                      <AlertDialogCancel className="w-full sm:w-auto">Cancel</AlertDialogCancel>
+                                      <AlertDialogAction
+                                        onClick={() => handleDelete(review.id)}
+                                        className="w-full sm:w-auto bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                      >
+                                        Delete
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center space-x-1">
+                              {renderStars(review.rating)}
+                              <span className="ml-2 text-sm font-medium">{review.rating}/5</span>
+                            </div>
+
+                            <p className="text-sm text-muted-foreground">
+                              {new Date(review.submitted_at || review.created_at).toLocaleDateString()}
+                            </p>
+
+                            <p className="text-sm pt-2 border-t">{review.review}</p>
                           </div>
-                        </TableCell>
-                      </TableRow>
+                        </CardContent>
+                      </Card>
                     ))}
-                  </TableBody>
-                </Table>
+                  </div>
+                </>
               )}
             </CardContent>
           </Card>

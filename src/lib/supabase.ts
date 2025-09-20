@@ -38,8 +38,8 @@ export interface Contact {
   event_date?: string;
   guest_count?: string;
   message?: string;
-  submitted_at: string;
-  created_at: string;
+  submitted_at: Date; // Changed to Date since it's a timestamp in the DB
+  created_at: Date;  // Changed to Date since it's a timestamp in the DB
 }
 
 export interface MenuItem {
